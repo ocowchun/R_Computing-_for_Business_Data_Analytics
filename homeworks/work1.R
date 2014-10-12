@@ -87,6 +87,15 @@ repeat{
 # 1次
 
 # Q6. (10%) Based on the results.txt file (in Lecture 1), write R code to reproduce the graph below.
+result=read.table("/Users/ocowchun/Dropbox/nccu/R_Computing _for_Business_Data_Analytics/0923/results.txt",header = T)
+attach(result)
+names(result)
+par(mfrow=c(2,2))
+# "arch1"  "prog1"  "arch2"  "prog2" 
+boxplot(arch1~gender,xlab="gender",main="Architecture Semester 1")
+boxplot(arch2~gender,xlab="gender",main="Architecture Semester 2")
+boxplot(prog1~gender,xlab="gender",main="Porgramming Semester 1")
+boxplot(prog2~gender,xlab="gender",main="Porgramming Semester 2")
 
 # Q7. (15%)
 # (a) Compute 4!, 50!, and 5000! (Hint: Use the factorial function)
