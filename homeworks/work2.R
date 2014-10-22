@@ -153,3 +153,21 @@ p3.sample=length(result[d1+d2>=5&(d1>d2|d1==4),1])
 p3.sample=p3.sample/n
 print(paste0("sample P(A and (B or C))= ",p3.sample))
 print(paste0("different between classical approach and sample:",(p3/36)-p3.sample))
+
+#Q2. (20%) Use the choose function in R to answer (c), (d), and (e) 
+#(c) How many different meals can be made from four kinds of meat, six vegetables, and three starches if a meal consists of one selection from each group?
+choose(4,1)*choose(6,1)*choose(3,1)
+
+#(d) A committee consists of five Chicanos, two Asians, three African Americans, and two Caucasians. 
+#A subcommittee of five is chosen at random. What is the probability that all the ethnic groups are represented on the subcommittee?
+total=5+2+3+2
+choose(5,1)*choose(2,1)*choose(3,1)*choose(2,1)*choose(total-4,1)/choose(total,5)
+
+#(e) A drawer of socks contains seven black socks, eight blue socks, and nine green socks.
+# Two socks are chosen in the dark.
+# What is the probability that they match?
+socks.total=7+8+9
+(choose(7,2)+choose(8,2)+choose(9,2))/choose(socks.total,2)
+# What is the probability that a black pair is chosen?
+(choose(7,2))/choose(socks.total,2)
+
