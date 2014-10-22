@@ -96,3 +96,40 @@ socks.total=7+8+9
 ```r
 (choose(7,2))/choose(socks.total,2)
 ```
+
+###Q3. (10%) Simulating Blackjack (classical versus relative)
+####(a) In the poker game Blackjack, let each of the 4 aces denote 11 points and each of the 16 cards > 10 (i.e., 10, J, Q, K) denote 10 points. Suppose someone picks 2 cards randomly out of a deck of cards (52 cards total), what is the probability of getting 21 points (i.e., Blackjack)?
+Use the choose function to obtain the answer.
+```r
+choose(4,1)*choose(16,1)/choose(52,2)
+```
+
+####(b) Now, let the numbers 1-52 represent a deck of cards. Assign the numbers 1-4 to the four aces and the numbers 37-52 to the 16 cards > 10.Use the sample function and the for loop to simulate the random draw of 2 cards 50,000 times (hint: with or without replacement?). Create a variable success that represents the number of times you hit 21 points (i.e., Blackjack). Divide success by 50,000 to obtain the relative probability.
+Is the relative probability close to the classical one from part (a)?
+
+```r
+bj.sim=function(times)
+{
+	success=0
+	for(i in 1:times){
+		result=sample(52,2)	
+		has.ace= any(result<=4)
+		has.ten=any(result<=52&result>=37)
+		if(has.ace&has.ten){
+			success=success+1
+		}
+	}
+	return (success)
+}
+success=bj.sim(50000)
+bj.classical=choose(4,1)*choose(16,1)/choose(52,2)
+print(paste0("the difference between simulate 50000times and classical is ",bj.classical-success/50000))
+
+```
+
+What will happen to the relative probability if you only simulate the game for 50 times?
+```r
+success=bj.sim(50)
+bj.classical=choose(4,1)*choose(16,1)/choose(52,2)
+print(paste0("the difference between simulate 50times and classical is ",bj.classical-success/50))
+```
