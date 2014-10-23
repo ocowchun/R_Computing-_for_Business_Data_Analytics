@@ -133,3 +133,52 @@ success=bj.sim(50)
 bj.classical=choose(4,1)*choose(16,1)/choose(52,2)
 print(paste0("the difference between simulate 50times and classical is ",bj.classical-success/50))
 ```
+
+
+###Q4. (20%) Conditional probability, law of total probability, and Bayes theorem.
+####(a) Two dice are rolled, and the sum of the face value is six. What is the probability that at least one of the dice camp up a three?
+1/36
+
+####(b) A fire insurance company has 10% high-risk, 20% medium-risk, and 70% low-risk clients, with respective probabilities 0.02, 0.01, and 0.0025 of filing claims within a given year. What proportion of the claims filed each year come from high-risk clients?
+0.02*10%=0.002
+
+####(c) A company that manufactures digital camcorders produces a basic model and a deluxe model. Over the past year, 40% of the camcorders sold have been of the basic model. Of those buying the basic model, 30% purchase an extended warranty, whereas 50% of all deluxe purchasers do so. If you learn that a randomly selected purchaser has an extended warranty, how likely is it that he/she has a basic model?
+% of basic model purchase an extended warranty= 40%*30%=12%
+% of deluxe model purchase an extended warranty= 60%*50%=30%
+the answer is 12%/(12%+30%) \\( \approx 28.6 \% \\)
+
+####(d) A factory runs three shifts. Each shift produces 100 items per day. In a given day, shift one has 1% defective items, shift two has 2% defects, and shift three has 5% defects. 
+What is the percentage of defective items? 
+(100 * 1% + 100 * 2 % + 100 * 5%)/300 \\(\approx 2.67 \% \\)
+If an item is defective, what is the probability that it was produced by shift three?
+(100 * 5%)/(100 * 1% + 100 * 2 % + 100 * 5%)=62.5%
+
+###Q5. (15%) A bank has five desks 1, 2,...,5. The percentages of customers visiting each desk are 20%, 30%, 10%, 15%, and 25%. Among customers for each desk, the percentages that customers would stay longer than 30 minutes are 40%, 60%, 20%, 80%, and 90%.
+####(a) Draw a tree diagram to model the process.
+
+####(b) What is the overall probability of customers staying longer than 30 minutes?
+```r
+customer_visit.p=c(0.2,0.3,0.1,0.15,0.25)
+longer30.p=c(0.4,0.6,0.2,0.8,0.9)
+customer_visit.p*longer30.p
+longer30.overall=sum(customer_visit.p*longer30.p)
+```
+62.5%
+####(c) If a newly entering customer stays longer than 30 minutes, what are the posterior probabilities that she/he visits desks 1, 2,...,5? (i.e., find P(D1|E), P(D2|E),..., P(D5|E) and make sure that they sum to 1)
+```r
+customer_visit.p*longer30.p/longer30.overall
+sum(customer_visit.p*longer30.p/longer30.overall)==1
+```
+
+P(D1|E)=12.8%
+P(D2|E)=28.8%
+P(D3|E)=3.2%
+P(D4|E)=19.2%
+P(D5|E)=36%
+
+###Q6. (15%) Assume that grades are posted according to the last 4 digits of one's ID. Use R to
+####(a) Find that the actual probability that at least two students in a class of 100 share the same ID.
+
+####(b) Simulate the last 4 digits for 100 students 5,000 times. How many times do you find at least two students have the same ID? Divide the number by 5,000, what is the fraction?
+
+####(c) What is the smallest class enrollment (i.e., number of students) for which the probability that at least two students have the same ID numbers is at least 0.5?

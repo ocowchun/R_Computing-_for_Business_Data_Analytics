@@ -205,3 +205,13 @@ print(paste0("the difference between simulate 50000times and classical is ",bj.c
 success=bj.sim(50)
 bj.classical=choose(4,1)*choose(16,1)/choose(52,2)
 print(paste0("the difference between simulate 50times and classical is ",bj.classical-success/50))
+
+###Q5. (15%) A bank has five desks 1, 2,...,5. The percentages of customers visiting each desk are 20%, 30%, 10%, 15%, and 25%.
+# Among customers for each desk, the percentages that customers would stay longer than 30 minutes are 40%, 60%, 20%, 80%, and 90%.
+####(b) What is the overall probability of customers staying longer than 30 minutes?
+customer_visit.p=c(0.2,0.3,0.1,0.15,0.25)
+longer30.p=c(0.4,0.6,0.2,0.8,0.9)
+customer_visit.p*longer30.p
+longer30.overall=sum(customer_visit.p*longer30.p)
+####(c) If a newly entering customer stays longer than 30 minutes, what are the posterior probabilities that she/he visits desks 1, 2,...,5? (i.e., find P(D1|E), P(D2|E),..., P(D5|E) and make sure that they sum to 1)
+customer_visit.p*longer30.p/longer30.overall
