@@ -163,7 +163,9 @@ longer30.p=c(0.4,0.6,0.2,0.8,0.9)
 customer_visit.p*longer30.p
 longer30.overall=sum(customer_visit.p*longer30.p)
 ```
-62.5%
+
+答案是62.5%
+
 ####(c) If a newly entering customer stays longer than 30 minutes, what are the posterior probabilities that she/he visits desks 1, 2,...,5? (i.e., find P(D1|E), P(D2|E),..., P(D5|E) and make sure that they sum to 1)
 ```r
 customer_visit.p*longer30.p/longer30.overall
@@ -178,7 +180,53 @@ P(D5|E)=36%
 
 ###Q6. (15%) Assume that grades are posted according to the last 4 digits of one's ID. Use R to
 ####(a) Find that the actual probability that at least two students in a class of 100 share the same ID.
+```r
+1-prod(c(9901:10000)/10000)
+
+```
+
+答案是39.1%
 
 ####(b) Simulate the last 4 digits for 100 students 5,000 times. How many times do you find at least two students have the same ID? Divide the number by 5,000, what is the fraction?
+```r
+uniq.sim=function(times){
+	success=0
+	
+	for( i in 1:times)
+	{
+		ids=sample(0:9999,100,replace=T)
+		if(length(unique(ids))<100){
+			success=success+1
+		}
+	}
+	return (success)
+}
+```
+
+答案是1977/5000
 
 ####(c) What is the smallest class enrollment (i.e., number of students) for which the probability that at least two students have the same ID numbers is at least 0.5?
+```r
+
+twosame.p=function(number){
+	start=10000-number+1
+	1-prod(c(start:10000)/10000)
+}
+
+find.number=function(p){
+	n=0
+	for(number in 1:10000)
+	{	
+		start=10000-number+1
+		p2=1-prod(c(start:10000)/10000)
+		if(p2>=p){
+			n=number
+			break;
+		}
+	}
+	return (n)
+}
+find.number(0.5)
+```
+
+答案是最少要119個學生
