@@ -153,8 +153,8 @@ print(paste0("the difference between simulate 50times and classical is ",bj.clas
 0.02*10%=0.002
 
 ####(c) A company that manufactures digital camcorders produces a basic model and a deluxe model. Over the past year, 40% of the camcorders sold have been of the basic model. Of those buying the basic model, 30% purchase an extended warranty, whereas 50% of all deluxe purchasers do so. If you learn that a randomly selected purchaser has an extended warranty, how likely is it that he/she has a basic model?
-% of basic model purchase an extended warranty= 40%*30%=12%
-% of deluxe model purchase an extended warranty= 60%*50%=30%
+% of basic model purchase an extended warranty= 40% * 30%=12%
+% of deluxe model purchase an extended warranty= 60% * 50%=30%
 the answer is 12%/(12%+30%) \\( \approx 28.6 \% \\)
 
 ####(d) A factory runs three shifts. Each shift produces 100 items per day. In a given day, shift one has 1% defective items, shift two has 2% defects, and shift three has 5% defects. 
