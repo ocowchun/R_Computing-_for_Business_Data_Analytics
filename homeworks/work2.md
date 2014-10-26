@@ -72,7 +72,7 @@ P(A)+P(B)=P(A \cup B) + P(A \cap B) \leq 1 + P(A \cap B)
 
 ###(b) The first three digits of a university telephone exchange are 452. What is the probability that a randomly selected university phone number contains seven distinct digits?
 \\(
-P^7_4/10^4 =7*6*5/10000=0.021
+P^7_4/10^4 =7*6*5*4/10000=0.084
 \\)
 
 ###(c) How many different meals can be made from four kinds of meat, six vegetables, and three starches if a meal consists of one selection from each group?
@@ -80,11 +80,15 @@ P^7_4/10^4 =7*6*5/10000=0.021
 choose(4,1)*choose(6,1)*choose(3,1)
 ```
 
+72
+
 ###(d) A committee consists of five Chicanos, two Asians, three African Americans, and two Caucasians. A subcommittee of five is chosen at random. What is the probability that all the ethnic groups are represented on the subcommittee?
 ```r
 total=5+2+3+2
-choose(5,1)*choose(2,1)*choose(3,1)*choose(2,1)*choose(total-4,1)/choose(total,5)
+choose(5,1)*choose(2,1)*choose(3,1)*choose(2,1)*choose(4,1)/choose(total,5)
 ```
+
+30.3%
 
 ###A drawer of socks contains seven black socks, eight blue socks, and nine green socks. Two socks are chosen in the dark. 
 ####What is the probability that they match?
@@ -92,10 +96,16 @@ choose(5,1)*choose(2,1)*choose(3,1)*choose(2,1)*choose(total-4,1)/choose(total,5
 socks.total=7+8+9
 (choose(7,2)+choose(8,2)+choose(9,2))/choose(socks.total,2)
 ```
+
+30.8%
+
 ####What is the probability that a black pair is chosen?
 ```r
 (choose(7,2))/choose(socks.total,2)
 ```
+
+7.6%
+
 
 ###Q3. (10%) Simulating Blackjack (classical versus relative)
 ####(a) In the poker game Blackjack, let each of the 4 aces denote 11 points and each of the 16 cards > 10 (i.e., 10, J, Q, K) denote 10 points. Suppose someone picks 2 cards randomly out of a deck of cards (52 cards total), what is the probability of getting 21 points (i.e., Blackjack)?
