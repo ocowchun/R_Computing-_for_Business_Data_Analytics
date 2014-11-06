@@ -94,3 +94,91 @@ lines(x,y.binom,col='red')
 lines(x,y.pois,col="green",lwd=2)
 lines(x,y.norm,col="blue",lwd=5)
 
+#Q5. (20%) Random Numbers and Monte-Carlo Simulation
+#(a) Implement the algorithm in the bottom of page 10 in lecture 5. Write a function runi.congru 
+# that has five arguments (N, A, B, m, seed) (N is the number of random variates to be simulated). 
+# After that, generate five uniform random numbers using A=1217, B=0, m=32767, and seed=1.
+# Save the five numbers as a vector u in R and show me the five numbers.
+
+runi.congru =function(N, A, B, m, seed){
+	x=seed
+	numbers=c()
+	for(i in 1:N){
+		x=(A*x+B)%%m
+		numbers[i]=x/m
+	}
+	numbers
+}
+
+u=runi.congru(5,1217,0,32767,1)#  0.03714103 0.20062868 0.16510514 0.93295083 0.40116581
+
+#(b) Implement the inverse transformation method in the bottom of page 11 in lecture 5. 
+# Write a function rbinom.invtran that has four arguments (N, n, p, uni) and returns N binomial random numbers.
+ # Set n=3, p=0.5, and use the vector u in part (a) as inputs to uni to generate five binom random variates. Show me the simulated numbers too.
+
+rbinom.invtran=function(N,n,p,uni){
+	numbers=c()
+	for(i in 1:N){
+		x=0
+		while(pbinom(x,n,p)<uni[i]){
+			x=x+1
+		}
+		numbers[i]=x
+	}
+	numbers
+}
+rbinom.invtran(5,3,0.5,u) # 0 1 1 3 1
+
+# (c) Now, use the function runi.congru in (a) to simulate another 50 numbers
+# by setting seed=2 (A=1217, B=0, m=32767 still) and store the 50 numbers in a vector U.
+U=runi.congru(50,1217,0,32767,2)# 1217  6574  5410 30570 13145
+#  [1] 7.428205e-02 4.012574e-01 3.302103e-01 8.659017e-01 8.023316e-01 4.375744e-01 5.280313e-01 6.140324e-01
+#  [9] 2.774438e-01 6.490677e-01 9.153417e-01 9.707938e-01 4.560381e-01 9.983520e-01 9.943846e-01 1.660512e-01
+# [17] 8.432264e-02 6.206549e-01 3.370464e-01 1.854915e-01 7.431562e-01 4.211249e-01 5.090182e-01 4.751732e-01
+# [25] 2.857753e-01 7.885678e-01 6.869716e-01 4.449599e-02 1.516160e-01 5.166173e-01 7.232887e-01 2.423170e-01
+# [33] 8.997467e-01 9.917295e-01 9.347819e-01 6.296274e-01 2.565081e-01 1.703238e-01 2.840663e-01 7.086703e-01
+# [41] 4.517655e-01 7.986084e-01 9.063692e-01 5.133213e-02 4.712058e-01 4.574419e-01 7.068392e-01 2.233039e-01
+# [49] 7.608875e-01 6.103702e-05
+
+
+#(d) For the zero-truncated Poission distribution
+#Following the logic of inverse transformation, write a function rztpois.invtran that has three arguments (N, lambda, uni) (lambda for λ)
+#and returns N zero-truncated Poisson random numbers. 
+#Set lambda=4 and use the vector U (part (c)) as inputs to uni to generate 50 non-zero Poisson random variates. Show me the simulated numbers too.
+
+dztpois=function(x,lambda){
+	lambda^x*exp(-lambda)/(factorial(x)*(1-exp(-lambda)))
+}
+
+pztpois=function(x,lambda){
+	if(x>1){
+		return (dztpois(x,lambda)+pztpois(x-1,lambda))
+	}
+	else{
+		return (dztpois(1,lambda))
+	}
+}
+
+rztpois.invtran=function(N, lambda, uni){
+	numbers=c()
+	for(i in 1:N){
+		x=1
+		while(pztpois(x,lambda)<uni[i]){
+			x=x+1
+		}
+		numbers[i]=x
+	}
+	numbers
+}
+rztpois.invtran(50,4,U)
+#  [1]  1  3  3  6  6  4  4  4  3  5  7  8  4 11 10  2  2  4  3  2  5  3  4  4  3  6  5  1  2  4  5  3  7 10  7  5  3  2
+# [39]  3  5  4  6  7  1  4  4  5  2  5  1
+
+#(e)
+customers.counts=rztpois.invtran(50,4,U)
+seat2=length(customers.counts[customers.counts<=2])
+seat4=length(customers.counts[customers.counts<=4&customers.counts>2])
+seat6=length(customers.counts[customers.counts<=6&customers.counts>4])
+room.private=length(customers.counts[customers.counts>6])
+
+
