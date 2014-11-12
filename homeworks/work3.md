@@ -85,6 +85,21 @@ PTF(9,-3,2,.5)#0.04235393
 (b) Continuing (a), given p=0.5, simulate n=50, n=5000, n=500,000 Bernoulli random numbers.
 For each simulated sample of size n, calculate pˆMLE from the sample and compare pˆMLE to the TRUE p=0.5, what have you observed?
 
+```r
+p=0.5
+n.list=c(50,5000,500000)
+p.mle=c()
+for(i in 1:length(g)){
+	n=n.list[i]
+	mle=sum(rbinom(n,1,0.5))/n
+	p.mle[i]=mle
+}
+p.mle-p
+```
+
+抽樣的次數越多,\\(\hat{p}_{MLE}\\)與p的誤差越小,也就是說樣本數越多,MLE會越接近理論值。
+
+
 ####(c) For the exponential distribution \\(f(x_i)=\lambda e^{- \lambda x_i}\\),derive\\(\hat{\lambda}_{MLE}\\) and prove the Markov Property:
 \\(
 \large loglik(\lambda)=log(\Pi^n_1 \lambda e^{-\lambda x_i}) \\
@@ -99,6 +114,24 @@ For each simulated sample of size n, calculate pˆMLE from the sample and compar
 \large \hat{\lambda}_{MLE}=\frac{n}{\sum^n_1{x_i}}
 \\)
 
+####(d) Continuing (c), given λ=0.5, simulate n=50, n=5000, n=500,000 exponential random numbers. For each simulated sample of size n, calculate \\(\hat{\lambda}_{MLE}\\) from the sample and compare \\(\hat{\lambda}_{MLE}\\)  to the TRUE λ=0.5, what have you observed?
+
+```r
+p=0.5
+n.list=c(50,5000,500000)
+p.mle=c()
+for(i in 1:length(g)){
+	n=n.list[i]
+	mle=sum(rbinom(n,1,0.5))/n
+	p.mle[i]=mle
+}
+p.mle-p
+```
+
+抽樣的次數越多,\\(\hat{\lambda}_{MLE}\\)與\\(\lambda\\)的誤差越小,也就是說樣本數越多,MLE會越接近理論值。
+
+
+
 ###Q3. (20%) Binomial and Poisson Distributions
 ####(a) The table below records the historical number of car accidents/week in a district. Create a vector called car.accident that stores 109 zeros, 65 ones, 22 twos, 3 threes, and 1 four.
 ```r
@@ -106,10 +139,12 @@ car.accident=c(rep(0,109),rep(1,65),rep(2,22),rep(3,3),rep(4,1))
 ```
 
 ####(b) Apply the fitdistr( ) function in R (load the MASS library first) to fit the car.accident data with the Poisson distribution.
-# What is the value of estimated λ? What is the log-likelihood?
-fitdistr(car.accident,"Poisson")# 0.61000000 
-fitdistr(car.accident,"Poisson")$loglik#-206.1067
 
+What is the value of estimated λ? What is the log-likelihood?
+```r
+fitdistr(car.accident,"Poisson")# lambda=0.61000000 
+fitdistr(car.accident,"Poisson")$loglik# log-likelihood=-206.1067
+```
 ####(c) Given the estimated λ, use R to do the computation and finish the 3rd column of table below.Are the predicted frequencies close to the actual frequency? 
 
 ```r

@@ -34,7 +34,31 @@ PTF.r0=function(a,g){
 	(1-a)*g
 }
 
-
+#Q2
+#(b) Continuing (a), given p=0.5, simulate n=50, n=5000, n=500,000 Bernoulli random numbers.
+#For each simulated sample of size n, calculate pˆMLE from the sample and compare pˆMLE to the TRUE p=0.5,
+#what have you observed?
+p=0.5
+n.list=c(50,5000,500000)
+p.mle=c()
+for(i in 1:length(g)){
+	n=n.list[i]
+	mle=sum(rbinom(n,1,0.5))/n
+	p.mle[i]=mle
+}
+p.mle-p
+#(d) Continuing (c), given λ=0.5, simulate n=50, n=5000, n=500,000 exponential random numbers.
+# For each simulated sample of size n, calculate \\(\hat{\lambda}_{MLE}\\) from the sample 
+# and compare \\(\hat{\lambda}_{MLE}\\)  to the TRUE λ=0.5, what have you observed?
+p=0.5
+n.list=c(50,5000,500000)
+p.mle=c()
+for(i in 1:length(g)){
+	n=n.list[i]
+	mle=n/sum(rexp(n,0.5))
+	p.mle[i]=mle
+}
+p.mle-p
 
 #Q3. (20%) Binomial and Poisson Distributions
 #(a) The table below records the historical number of car accidents/week in a district.
