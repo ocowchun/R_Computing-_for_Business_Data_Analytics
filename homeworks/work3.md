@@ -68,14 +68,18 @@ PTF(9,-3,2,.5)#0.04235393
 
 ###Q2. (20%) MLE and Simulation
 
-####(a) For the Bernoulli distribution \\(P(X=x_i|p)=p^{x_i}(1-p)^{1-x_i}\\)
-\\(
-\large loglik(p)=log(\Pi^n_1{p^{\Sigma^n_{i=1}}(1-p)^{n-\Sigma^n_1x_i} }) \\
-\large = \Sigma^n_{i=1}x_ilog p+(n-\Sigma^n_1)log(1-p)
-\\)
+####(a) For the Bernoulli distribution \\(P(X=x_i|p)=p^{x_i}(1-p)^{1-x_i}\\),derive\\(\hat{p}_{MLE}\\)
 
 \\(
-\large \frac{d loglik(p)}{d p}=\Sigma^n_{i=1}x_i/p
+\large loglik(p)=log({p^{\Sigma^n_{i=1}}(1-p)^{n-\Sigma^n_{i=1}x_i} }) \\
+\large = \Sigma^n_{i=1}x_ilog p+(n-\Sigma^n_{i=1})log(1-p)
+\\)
+
+找極值,loglik(p)一階微分等於0
+
+\\(
+\large \frac{d loglik(p)}{d p}=\frac{1}{p}\Sigma^n_{i=1}x_i-\frac{1}{1-p}(n-\Sigma^n_{i=1})=0\\
+\large \hat{p}_{MLE}=\Sigma^n_{i=1}x_i/n
 \\)
 
 (b) Continuing (a), given p=0.5, simulate n=50, n=5000, n=500,000 Bernoulli random numbers.
@@ -86,6 +90,8 @@ For each simulated sample of size n, calculate pˆMLE from the sample and compar
 \large loglik(\lambda)=log(\Pi^n_1 \lambda e^{-\lambda x_i}) \\
 \large =n*log\lambda + (-\lambda\sum^n_1{x_i})\\
 \\)
+
+找極值,loglik(\\(\lambda\\))一階微分等於0
 
 \\(
 \large \frac{d loglik(\lambda)}{d \lambda}=n/\lambda-\sum^n_1{x_i}=0 \\
