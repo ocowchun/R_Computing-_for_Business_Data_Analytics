@@ -51,3 +51,51 @@ basselI_Gen=function(a,v,z,max,tolerance){
 ```
 
 ##Q3
+```r
+wald.interval=function(size,theta.hat){
+	upper_bound=theta.hat+1.96*sqrt(theta.hat*(1-theta.hat)/size)
+	lower_bound=theta.hat-1.96*sqrt(theta.hat*(1-theta.hat)/size)
+	result=list(upper_bound=upper_bound,lower_bound=lower_bound)
+	return (result)
+}
+
+adjustwald.interval=function(size,theta.hat){
+	theta.tilde=(size*theta.hat+2)/(size+4)
+	upper_bound=theta.tilde+1.96*sqrt(theta.tilde*(1-theta.tilde)/size)
+	lower_bound=theta.tilde-1.96*sqrt(theta.tilde*(1-theta.tilde)/size)
+	result=list(upper_bound=upper_bound,lower_bound=lower_bound)
+	return (result)
+}
+
+coverage.sim=function(size,theta){
+	n=5000
+	y=rbinom(n,size,theta)
+	thetas=rep(theta,n)
+	theta.hat=y/size
+	w=wald.interval(size,theta.hat)
+	a=adjustwald.interval(size,theta.hat)
+	w.overlap=thetas[thetas>=w$lower_bound&thetas<=w$upper_bound]
+	a.overlap=thetas[thetas>=a$lower_bound&thetas<=a$upper_bound]
+	wald.coverage=length(w.overlap)/n
+	adjust.coverage=length(a.overlap)/n
+	return (list(wald=wald.coverage,adjust=adjust.coverage))
+}
+
+coverage.graph=function(){
+	size=20
+	thetas=seq(0.01,0.49,0.02)
+	wald=c()
+	adjust=c()
+	for(i in 1:length(thetas)){
+		theta=thetas[i]
+		coverage=coverage.sim(size,theta)
+		wald[i]=coverage$wald
+		adjust[i]=coverage$adjust
+	}
+	plot(cbind(c(0,0.5),seq(0.65,1,0.05)),type="n",ylab='Coverage',xlab=expression(theta))
+	abline(h=0.95)
+	lines(thetas,wald,col='blue')
+	lines(thetas,adjust,col='red')
+}
+coverage.graph()
+```
