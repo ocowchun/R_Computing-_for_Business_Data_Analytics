@@ -10,16 +10,16 @@ x=seq(-2,2,0.05)
 # plot(x,heart_lo(x),ylim=c(heart_lo(0),1),type='l')
 # lines(x,heart_up(x))
 n=100000
-macine_gun=function(n){
+machine_gun=function(n){
 	up_bound=max(heart_up(x))
-	lo_bound=max(heart_lo(x))
+	lo_bound=min(heart_lo(x))
 	bullet.x=runif(n,-2,2)
 	bullet.y=runif(n,lo_bound,up_bound)
 	hit=sum(bullet.y<=heart_up(bullet.x)&bullet.y>=heart_lo(bullet.x))
 	box=4*(up_bound-lo_bound)
 	box*hit/n
 }
-
+machine_gun(n)
 #Q2
 
 bessel.element=function(a,v,z,m){
@@ -93,7 +93,7 @@ coverage.graph=function(){
 	lines(thetas,wald,col='blue')
 	lines(thetas,adjust,col='red')
 }
-coverage.graph()
+# coverage.graph()
 
 
 
