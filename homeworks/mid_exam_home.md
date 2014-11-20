@@ -1,3 +1,6 @@
+#R Computing Midterm Exam:Take Home
+葉早彬,陳威宇,劉瑞祥
+
 ##Q1
 ```r
 heart_up=function(x){
