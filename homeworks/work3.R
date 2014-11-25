@@ -41,7 +41,7 @@ PTF.r0=function(a,g){
 p=0.5
 n.list=c(50,5000,500000)
 p.mle=c()
-for(i in 1:length(g)){
+for(i in 1:length(n.list)){
 	n=n.list[i]
 	mle=sum(rbinom(n,1,0.5))/n
 	p.mle[i]=mle
@@ -53,7 +53,7 @@ p.mle-p
 p=0.5
 n.list=c(50,5000,500000)
 p.mle=c()
-for(i in 1:length(g)){
+for(i in 1:length(n.list)){
 	n=n.list[i]
 	mle=n/sum(rexp(n,0.5))
 	p.mle[i]=mle
