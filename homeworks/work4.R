@@ -8,12 +8,6 @@
 experience2=experience*experience
 CPS_lm=lm(log(wage)~experience+experience2+education+as.factor(ethnicity))
 
-# (b) Explain the results in detail. What is the statistical significance of each independent variable? 
-# What are the implications of the findings? Particularly, what is the association between wage and experience? 
-# Is the identified association linear? If not, what is the shape of the association?
-
-# (c) Based on the estimated coefficients, write out the two equations of predictive models for Africa-American
- # and Caucasian respectively.
 
 
 #Q2. Monte-Carlo simulation experiments of linear regression (OLS)
@@ -37,51 +31,110 @@ CPS_lm=lm(log(wage)~experience+experience2+education+as.factor(ethnicity))
 # For n=1000 and n=5000, generate a plot (respectively) where the x-axis is mclvl and 
 # the y-axis is the corresponding standard deviation of b1. Discuss what you find.
 
-# library(mvtnorm)
-# set.seed(121402)
-# # Create two correlated independent variables
+library(mvtnorm)
+set.seed(121402)
+# Create two correlated independent variables
+n=1000
+b0=0.2
+b1=0.5
+b2=0.75
+mclvls= seq(0, 0.95, 0.05)
+
+simulate=function(n){
+
+	b1.sds=c()
+	for(i in 1:length(mclvls)){
+		mclvl=mclvls[i]
+		b1.estimate=c()
+		for(j in 1:10)
+		{
+			x.corr=matrix(c(1, mclvl, mclvl, 1), ncol=2)
+			x=rmvnorm(n, mean=c(0, 0), sigma=x.corr) # n is the sample size 
+			x1=x[ , 1]
+			x2=x[, 2]
+			y=b0+b1*x1+b2*x2+rnorm(n, 0, 1)
+			lm(y~x1+x2)
+			b1.estimate[j]=coef(lm(y~x1+x2))[2]
+		}
+		b1.sds[i]=sd(b1.estimate)
+	}
+	b1.sds
+}
+
+multicollinearity.plot=function(){
+	b1.1000=simulate(1000)
+	b1.5000=simulate(5000)
+
+	plot(mclvls,seq(0,0.1,0.1/19),type='n',ylab='the corresponding standard deviation of b1')
+	lines(mclvls,b1.1000,col='green')	
+	lines(mclvls,b1.5000,col='red')	
+}
+
+###(b) Omitted variable
+library(mvtnorm)
+set.seed(121402)
+# Create two correlated independent variables
+mclvls= c(0,0.5,1)
+
+omitted.plot=function(n){
+
+	par.est=matrix(NA, nrow=n, ncol=3)
+
+	for(j in 1:n)
+	{
+
+		for(i in 1:length(mclvls)){
+			mclvl=mclvls[i]
+			x.corr=matrix(c(1, mclvl, mclvl, 1), ncol=2)
+			x=rmvnorm(n, mean=c(0, 0), sigma=x.corr) # n is the sample size 
+			x1=x[ , 1]
+			x2=x[, 2]
+			y=b0+b1*x1+b2*x2+rnorm(n, 0, 1)
+			model=lm(y~x1)
+			par.est[j, i]=model$coef[2]
+
+		}
+	}
+	par.est
 
 
-# n=1000
-# b0=0.2
-# b1=0.5
-# b2=0.75
-# mclvls= seq(0, 0.95, 0.05)
+	plot(c(min(par.est),max(par.est)),c(0,15),main="",lwd=2,xlab='b1',ylab='density',type='n')
+	lines(density(par.est[,3]),col= 'green', lwd=3, lty=3)
+	lines(density(par.est[,2]),col= 'red', lwd=2, lty=2)
+	lines(density(par.est[,1]),col= 'black', lwd=1, lty=1)
+	abline(v=b1,col='blue')
 
-# simulate=function(n){
-
-# 	b1.sds=c()
-# 	for(i in 1:length(mclvls)){
-# 		mclvl=mclvls[i]
-# 		b1.estimate=c()
-# 		for(j in 1:1000)
-# 		{
-# 			x.corr=matrix(c(1, mclvl, mclvl, 1), ncol=2)
-# 			x=rmvnorm(n, mean=c(0, 0), sigma=x.corr) # n is the sample size 
-# 			x1=x[ , 1]
-# 			x2=x[, 2]
-# 			y=b0+b1*x1+b2*x2+rnorm(n, 0, 1)
-# 			lm(y~x1+x2)
-# 			b1.estimate[j]=coef(lm(y~x1+x2))[2]
-# 		}
-# 		b1.sds[i]=sd(b1.estimate)
-# 	}
-# 	b1.sds
-# }
-
-# b1.1000=simulate(1000)
-# b1.5000=simulate(5000)
-
-# # c( 0.03105775,0.03187844,0.03134528,0.03060289,0.03073419,0.03117804,0.03034489,0.03144453,0.03095313,0.03132244,0.02980386,0.03178032,0.02981876,0.03067123,0.03068498,0.03095199,0.03009171,0.03177161,0.03152608,0.03132736)
-# plot(mclvls,b1.1000,type='l')
-# lines(mclvls,b1.5000,col='red')	
+	legend(0.9,15,c("cor=0","cor=0.5","cor=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
+}
 
 
+# (c) Measurement error
+measurement.plot=function(){
+	errlvls=c(0,0.5,1)
+	set.seed(385062)
+	n=1000
+	b0=0.2
+	b1=0.5
+	x=runif(n, -1, 1)
+	par.est=matrix(NA, nrow=n, ncol=3)
 
-# practice
-# kidiq=read.dta("/Users/ocowchun/Dropbox/nccu/R_Computing _for_Business_Data_Analytics/1111/kidiq.dta",convert.underscore=T)
-# fit.1=lm(kid.score ~ mom.hs + mom.iq)
 
-# plot(mom.iq, kid.score, xlab= "Mother IQ", ylab= "Child test score", pch=20)
-# curve(cbind(1, 1, x, 1*x) %*% coef(fit.2), add=T, col= "red")
-# curve(cbind(1, 0, x, 0*x) %*% coef(fit.2), add=T, col= "green")
+	for(i in 1:length(errlvls)){
+		errlvl=errlvls[i]
+		xp=x+rnorm(n, 0, errlvl)
+		for(j in 1:n){
+			y=b0+b1*x+rnorm(n, 0, 1)
+			model=lm(y~xp)
+			par.est[j, i]=model$coef[2]
+		}
+	}
+	par.est
+	plot(c(min(par.est),max(par.est)),c(0,15),main="",lwd=2,xlab='b1',ylab='density',type='n')
+	lines(density(par.est[,3]),col= 'green', lwd=3, lty=3)
+	lines(density(par.est[,2]),col= 'red', lwd=2, lty=2)
+	lines(density(par.est[,1]),col= 'black', lwd=1, lty=1)
+	abline(v=b1,col='blue')
+
+	legend(0.3,15,c("errlvl=0","errlvl=0.5","errlvl=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
+
+}

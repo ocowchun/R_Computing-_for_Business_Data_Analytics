@@ -2,9 +2,9 @@
 ###(a) Run the linear regression model below (using lm( )) and save the model as object “CPS_lm”.Note that the ethnicity is a categorical/dummy variable.
 
 ```r
-# library("AER")
-# data("CPS1988")
-# attach(CPS1988)
+ library("AER")
+ data("CPS1988")
+ attach(CPS1988)
 experience2=experience*experience
 CPS_lm=lm(log(wage)~experience+experience2+education+as.factor(ethnicity))
 ```
@@ -33,3 +33,51 @@ $if ethnicity =Africa\,American:\\
 
 $if ethnicity =Caucasian:\\
 \large wage=e^{4.321395+0.077473*experience-0.001316*experience^2+0.085673*education}$
+
+
+##Q2. Monte-Carlo simulation experiments of linear regression (OLS)
+###(a) Multicollinearity
+```r
+library(mvtnorm)
+set.seed(121402)
+# Create two correlated independent variables
+n=1000
+b0=0.2
+b1=0.5
+b2=0.75
+mclvls= seq(0, 0.95, 0.05)
+
+simulate=function(n){
+
+	b1.sds=c()
+	for(i in 1:length(mclvls)){
+		mclvl=mclvls[i]
+		b1.estimate=c()
+		for(j in 1:1000)
+		{
+			x.corr=matrix(c(1, mclvl, mclvl, 1), ncol=2)
+			x=rmvnorm(n, mean=c(0, 0), sigma=x.corr) # n is the sample size 
+			x1=x[ , 1]
+			x2=x[, 2]
+			y=b0+b1*x1+b2*x2+rnorm(n, 0, 1)
+			lm(y~x1+x2)
+			b1.estimate[j]=coef(lm(y~x1+x2))[2]
+		}
+		b1.sds[i]=sd(b1.estimate)
+	}
+	b1.sds
+}
+
+b1.1000=simulate(1000)
+b1.5000=simulate(5000)
+
+
+plot(mclvls,seq(0,0.1,0.1/19),type='n',ylab='the corresponding standard deviation of b1')
+lines(mclvls,b1.1000,col='green')	
+
+lines(mclvls,b1.5000,col='red')	
+```
+mclvl越高,b1的標準差越大,也就是說兩個變數的covariance的絕對值越接近1,兩者共線性的程度越明顯,regression的估計效果會越差。
+
+
+###(b) Omitted variable
