@@ -1,3 +1,6 @@
+#Homework 4--R computing for Business Data Analytics
+好棒棒:葉早彬、陳威宇、劉瑞祥
+
 ##Q1. Import the library AER in R, and attach the data set CPS1988.
 ###(a) Run the linear regression model below (using lm( )) and save the model as object “CPS_lm”.Note that the ethnicity is a categorical/dummy variable.
 
@@ -37,6 +40,9 @@ $if ethnicity =Caucasian:\\
 
 ##Q2. Monte-Carlo simulation experiments of linear regression (OLS)
 ###(a) Multicollinearity
+
+####answer:
+
 ```r
 library(mvtnorm)
 set.seed(121402)
@@ -81,3 +87,103 @@ mclvl越高,b1的標準差越大,也就是說兩個變數的covariance的絕對�
 
 
 ###(b) Omitted variable
+Following the procedure in (a), for each mclvl in c(0, 0.5, 1), set n=1000 and simulate x1& x2. Then simulate the dependent variable using
+```r
+> y=b0+b1*x1+b2*x2+rnorm(n, 0, 1) #set b0=0.2; b1=0.5; b2=0.75
+```
+Estimate b1 from lm(y~x1) – we intentionally omit x2 – and repeat the estimation for 1000 times (for a given mclvl). Save all of the estimated b1 and plot the three distributions of estimated b1 in each mclvl. Compare the distributions to the true b1=0.5. What is the impact of omitting x2? Discuss what you observe.
+
+####answer:
+```r
+library(mvtnorm)
+set.seed(121402)
+# Create two correlated independent variables
+mclvls= c(0,0.5,1)
+
+omitted.plot=function(n){
+
+	par.est=matrix(NA, nrow=n, ncol=3)
+
+	for(j in 1:n)
+	{
+
+		for(i in 1:length(mclvls)){
+			mclvl=mclvls[i]
+			x.corr=matrix(c(1, mclvl, mclvl, 1), ncol=2)
+			x=rmvnorm(n, mean=c(0, 0), sigma=x.corr) # n is the sample size 
+			x1=x[ , 1]
+			x2=x[, 2]
+			y=b0+b1*x1+b2*x2+rnorm(n, 0, 1)
+			model=lm(y~x1)
+			par.est[j, i]=model$coef[2]
+
+		}
+	}
+	par.est
+
+
+	plot(c(min(par.est),max(par.est)),c(0,15),main="",lwd=2,xlab='b1',ylab='density',type='n')
+	lines(density(par.est[,3]),col= 'green', lwd=3, lty=3)
+	lines(density(par.est[,2]),col= 'red', lwd=2, lty=2)
+	lines(density(par.est[,1]),col= 'black', lwd=1, lty=1)
+	abline(v=b1,col='blue')
+
+	legend(0.9,15,c("mclvl=0","mclvl=0.5","mclvl=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
+}
+omitted.plot(1000)
+```
+
+
+mclvl小,意味著x1,x2的共線性的程度小,線性迴歸得到的$\hat{b1}$會接近真實的b1。
+mclvl大時,x1,x2的共線性程度大,線性迴歸得到的$\hat{b1}$與真實的b1的誤差變大,而且$\hat{b1}$越接近b1+b2。
+###(c)Measurement error
+Run the following codes in R
+```
+> set.seed(385062) > n=1000
+> x=runif(n, -1, 1)
+```
+For each errlvl in c(0, 0.5, 1), generate x with measurement error > xp=x+rnorm(n, 0, errlvl)
+Then repeat the following process for 1000 times. First simulate the dependent variable using 
+```r
+> y=b0+b1*x+rnorm(n, 0, 1) #set b0=0.2; b1=0.5
+```
+Then estimate b1 from OLS regression (lm( )) > lm(y~xp)
+Save the estimated b1 in each of the 1000 replications (for this given errlvl).
+Plot the three distributions of estimated b1s for errlvl in c(0, 0.5, 1). Compare the distributions to the true b1=0.5. What’s the impact of measurement errors? Discuss what you observe.
+
+####answer:
+```r
+measurement.plot=function(){
+	errlvls=c(0,0.5,1)
+	set.seed(385062)
+	n=1000
+	b0=0.2
+	b1=0.5
+	x=runif(n, -1, 1)
+	par.est=matrix(NA, nrow=n, ncol=3)
+
+
+	for(i in 1:length(errlvls)){
+		errlvl=errlvls[i]
+		xp=x+rnorm(n, 0, errlvl)
+		for(j in 1:n){
+			y=b0+b1*x+rnorm(n, 0, 1)
+			model=lm(y~xp)
+			par.est[j, i]=model$coef[2]
+		}
+	}
+	par.est
+	plot(c(min(par.est),max(par.est)),c(0,15),main="",lwd=2,xlab='b1',ylab='density',type='n')
+	lines(density(par.est[,3]),col= 'green', lwd=3, lty=3)
+	lines(density(par.est[,2]),col= 'red', lwd=2, lty=2)
+	lines(density(par.est[,1]),col= 'black', lwd=1, lty=1)
+	abline(v=b1,col='blue')
+
+	legend(0.3,15,c("errlvl=0","errlvl=0.5","errlvl=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
+
+}
+measurement.plot()
+```
+errlvl越小,線性迴歸得到的$\hat{b1}$會接近真實的b1。
+errlvl越大,線性迴歸得到的$\hat{b1}$與真實的b1的誤差越大。
+所以跑線性迴歸前,要確認收集到的資料是乾淨的 :D
