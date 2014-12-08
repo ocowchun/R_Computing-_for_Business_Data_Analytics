@@ -2,9 +2,9 @@
 # (a) Run the linear regression model below (using lm( )) and save the model as object “CPS_lm”.
 # Note that the ethnicity is a categorical/dummy variable.
 
-# library("AER")
-# data("CPS1988")
-# attach(CPS1988)
+library("AER")
+data("CPS1988")
+attach(CPS1988)
 experience2=experience*experience
 CPS_lm=lm(log(wage)~experience+experience2+education+as.factor(ethnicity))
 
@@ -34,14 +34,12 @@ CPS_lm=lm(log(wage)~experience+experience2+education+as.factor(ethnicity))
 library(mvtnorm)
 set.seed(121402)
 # Create two correlated independent variables
+
 n=1000
 b0=0.2
 b1=0.5
 b2=0.75
-mclvls= seq(0, 0.95, 0.05)
-
-simulate=function(n){
-
+simulate=function(n,mclvls){
 	b1.sds=c()
 	for(i in 1:length(mclvls)){
 		mclvl=mclvls[i]
@@ -62,13 +60,16 @@ simulate=function(n){
 }
 
 multicollinearity.plot=function(){
-	b1.1000=simulate(1000)
-	b1.5000=simulate(5000)
+	mclvls= seq(0, 0.95, 0.05)
+	b1.1000=simulate(1000,mclvls)
+	b1.5000=simulate(5000,mclvls)
 
 	plot(mclvls,seq(0,0.1,0.1/19),type='n',ylab='the corresponding standard deviation of b1')
 	lines(mclvls,b1.1000,col='green')	
 	lines(mclvls,b1.5000,col='red')	
 }
+
+multicollinearity.plot()
 
 ###(b) Omitted variable
 library(mvtnorm)
@@ -76,7 +77,7 @@ set.seed(121402)
 # Create two correlated independent variables
 mclvls= c(0,0.5,1)
 
-omitted.plot=function(n){
+omitted.plot=function(n=1000){
 
 	par.est=matrix(NA, nrow=n, ncol=3)
 
@@ -104,20 +105,19 @@ omitted.plot=function(n){
 	lines(density(par.est[,1]),col= 'black', lwd=1, lty=1)
 	abline(v=b1,col='blue')
 
-	legend(0.9,15,c("cor=0","cor=0.5","cor=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
+	legend(0.9,15,c("mclvl=0","mclvl=0.5","mclvl=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
 }
-
+omitted.plot()
 
 # (c) Measurement error
-measurement.plot=function(){
+measurement.plot=function(n=1000){
 	errlvls=c(0,0.5,1)
 	set.seed(385062)
-	n=1000
+	
 	b0=0.2
 	b1=0.5
 	x=runif(n, -1, 1)
 	par.est=matrix(NA, nrow=n, ncol=3)
-
 
 	for(i in 1:length(errlvls)){
 		errlvl=errlvls[i]
@@ -138,3 +138,4 @@ measurement.plot=function(){
 	legend(0.3,15,c("errlvl=0","errlvl=0.5","errlvl=1"), lty=c(1,2,3),lwd=c(1,2,3),bty="n",cex=1.1,col=c('black','red','green'))
 
 }
+measurement.plot()
