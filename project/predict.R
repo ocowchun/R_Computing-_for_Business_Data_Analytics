@@ -1,0 +1,1 @@
+dd=read.csv("/Users/ocowchun/Dropbox/nccu/R_Computing _for_Business_Data_Analytics/temp/ctr10k.csv",header=F)
