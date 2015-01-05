@@ -83,7 +83,9 @@ tree=function(data,class,str=c()){
 # 如果全部的data都是na 代表結束了
 		# print("QQ")
 		if(all(is.na(data.set$data[1,]))){
-			cl=round(mean(data.set$class))
+			# print(paste("class:",mean(data.set$class)))
+			cl=round(mean(data.set$class)+0.1)
+
 			if(cl==1)#只顯示會買的
 			{
 				# print(c(str,"class",cl))
@@ -104,6 +106,8 @@ tree=function(data,class,str=c()){
 
 train=function(data,class){
 	guides=tree(data,class)
+print('guides')
+	print(guides)
 	learn(guides)
 }
 
@@ -160,7 +164,7 @@ learn=function(guides){
 	function(data){
 		classifier=list()
 		result=c()
-		for(i in 1:length(guides[,1])){
+		for(i in 1:length(guides[1,])){
 			key=paste('c',i,sep="")
 			guide=guides[,i]
 		# classifier[key]=learn.one(guide)
@@ -170,4 +174,29 @@ learn=function(guides){
 		any(result==T)
 	}
 
+}
+
+
+fuck2=function(data,predict) {
+	vs=c()
+	for(i in 1:length(data[,1])){
+		v=predict(data[i,])
+		vs[i]=v
+	}
+	vs
+}
+
+
+library(ROCR)
+
+validate=function(ps){
+#第一個參數是n個0~1的數字,第2參數是
+	pred=prediction(ps,as.factor(class2))
+#繪圖
+	dev.new(width=12,height=5)
+	par(mfrow=c(1,2))
+	plot(performance(pred,"acc"))
+	print(performance(pred,"acc"))
+	plot(performance(pred,"tpr","fpr"))
+	abline(0,1,lty=2)
 }
