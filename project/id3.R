@@ -173,7 +173,6 @@ learn=function(guides){
 	# classifier
 		any(result==T)
 	}
-
 }
 
 

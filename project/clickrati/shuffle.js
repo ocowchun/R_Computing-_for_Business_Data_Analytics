@@ -18,7 +18,7 @@ var sample = function(cb) {
 
 	var lines = [];
 	var fuckNum = 40428960;
-	var sampleIndex = getSampleIndex(40000, fuckNum);
+	var sampleIndex = getSampleIndex(400000, fuckNum);
 
 	var currentLines = 0;
 	var errors = [];
@@ -30,15 +30,7 @@ var sample = function(cb) {
 			// if (lineCount === currentTarget) {
 			line = line.toString();
 
-			if (valideData(line)) {
-				lines.push(line);
-
-			} else {
-				errors.push({
-					lineCount: lineCount,
-					line: line
-				});
-			}
+			lines.push(line);
 			currentLines++;
 			// currentTarget = sampleIndex.shift();
 			if (currentLines % 4000 === 0) {
@@ -68,8 +60,8 @@ var sample = function(cb) {
 
 function append(lines) {
 	// lines.con
-	var result = lines.join("\n")+"\n";
-	var fileName = "/Users/ocowchun/Dropbox/nccu/R_Computing _for_Business_Data_Analytics/temp/train.4k.csv";
+	var result = lines.join("\n") + "\n";
+	var fileName = "/Users/ocowchun/Dropbox/nccu/R_Computing _for_Business_Data_Analytics/temp/test400k.csv";
 	fs.appendFile(fileName, result, function(err) {
 		if (err) throw err;
 		console.log('The "data to append" was appended to file!');
@@ -104,12 +96,8 @@ function getSampleIndex(size, max) {
 }
 
 
-function valideData(line) {
-	return line.split(',').length === 24
-}
 
 sample(function(lines) {
 	writeLines(lines);
 	// console.log(lines.length);
 });
-

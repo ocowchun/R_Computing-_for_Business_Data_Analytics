@@ -16,7 +16,7 @@ tree=function(data,class,str=c()){
 		if(all(is.na(data.set$data[1,]))){
 			cl=round(mean(data.set$class)+0.1)
 
-			if(cl==1)#只顯示會買的
+			if(cl==1)#只顯示會點擊的
 			{
 				print(str1)
 				result=cbind(result,str1)
