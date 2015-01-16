@@ -1,18 +1,10 @@
-# age=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3)
-# job=c(0,0,1,1,0,0,0,1,0,0,0,0,1,1,0)
-# house=c(0,0,0,1,0,0,0,1,1,1,1,1,0,0,0)
-# credit=c(1,2,2,1,1,1,2,2,3,3,3,2,2,3,1)
-# class=c(0,0,1,1,0,0,0,1,1,1,1,1,1,1,0)
-
+# 測試資料
 age=c(1,1,2,3,3,3,2,1,1,3,1,2,2,3)
 income=c(3,3,3,2,1,1,1,2,1,2,2,2,3,2)
 student=c(0,0,0,0,1,1,1,0,1,1,1,0,1,0)
 credit=c(0,1,0,0,0,1,1,0,0,0,1,1,0,1)
 data=cbind(age,income,student,credit)
-
 class=c(0,0,1,1,1,0,1,0,1,1,1,1,1,0)
-
-
 class2=c("n","n","t","t","t","n","t","n","t","t","t","t","t","n")
 
 
@@ -57,56 +49,42 @@ entropy=function(attr,class){
 }
 
 attr.name=c("age","income","student","credit")
-# data=list(age=age,income=income)
+
 tree=function(data,class,str=c()){
-# print("tt")
 # find attr with min entropy
 	data.entropy=c()
 	for(i in 1:length(data[1,])){
 		data.entropy[i]=entropy(data[,i],class)
 	}
-	# print(data.entropy)
-	# min.idx=min.entropy(data.entropy)
 	min.idx=which(data.entropy==min(data.entropy))[1]
-	# print(min.idx)
 	# seprate
 	attr.selected=data[,min.idx]
 	attr.val=unique(attr.selected)
 	result=c()
 	for(i in 1:length(attr.val)){
 		val=attr.val[i]
-		# print(min.idx)
 		data.set=seprate(min.idx,val,data,class)
-		# str1=c(str,attr.name[min.idx],val)
-		# str1=paste(str,attr.name[min.idx],val)
 		str1=c(str,c(attr.name[min.idx],val))
 # 如果全部的data都是na 代表結束了
-		# print("QQ")
 		if(all(is.na(data.set$data[1,]))){
-			# print(paste("class:",mean(data.set$class)))
 			cl=round(mean(data.set$class)+0.1)
 
 			if(cl==1)#只顯示會買的
 			{
-				# print(c(str,"class",cl))
-				# sentence=paste(str1,"class=1")
 				print(str1)
 				result=cbind(result,str1)#[length(result)+1]=paste(str1)
-
 			}
 		}else{
-			# print("t2")
 			result=cbind(result,tree(data.set$data,data.set$class,str1))
 		}
-
 	}
 	result
 	
 }
 
+# 實際執行的方法
 train=function(data,class){
 	guides=tree(data,class)
-print('guides')
 	print(guides)
 	learn(guides)
 }
@@ -174,21 +152,15 @@ learn=function(guides){
 		any(result==T)
 	}
 }
+library(ROCR)
 
-
-fuck2=function(data,predict) {
+validate=function(data,predict){
 	vs=c()
 	for(i in 1:length(data[,1])){
 		v=predict(data[i,])
 		vs[i]=v
 	}
-	vs
-}
-
-
-library(ROCR)
-
-validate=function(ps){
+	ps=ifelse(ps==T,1,0)
 #第一個參數是n個0~1的數字,第2參數是
 	pred=prediction(ps,as.factor(class2))
 #繪圖
@@ -199,3 +171,5 @@ validate=function(ps){
 	plot(performance(pred,"tpr","fpr"))
 	abline(0,1,lty=2)
 }
+
+

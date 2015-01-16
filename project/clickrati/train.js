@@ -69,7 +69,7 @@ function cleanLine(line) {
 
 	// data=cbind(v4,v5,v8,v10,v11,v15,v16,v17,v18,v19,v20)
 	// 3,4,7,9,10,14,15,16,17,18,19
-	return [line[3], line[4], line[7], line[9], line[10], line[14], line[15], line[16], line[17], line[18], line[19], line[1]*1];
+	// return [line[3], line[4], line[7], line[9], line[10], line[14], line[15], line[16], line[17], line[18], line[19], line[1]*1];
 
 	// return [line[3],line[19], line[1]*1];
 
@@ -90,11 +90,26 @@ function cleanLine(line) {
 	// 	var day = t.slice(4, 6);
 	// 	var hh = t.slice(6, 8);
 	// 	return [month, day, hh, line[3], line[4], line[7], line[9], line[10],
-	// 		line[14], line[15], line[16], line[17], line[18], line[19], line[1]
+	// 		line[14], line[15], line[16], line[17], line[18], line[19], line[1]*1
 	// 	];
 	// } else {
 	// 	return "";
 	// }
+	
+	
+	// test6
+	// hour: format is YYMMDDHH, so 14091123 means 23:00 on Sept. 11, 2014 UTC.
+	if (line.length > 1) {
+		var t = line[2];
+		var month = t.slice(2, 4);
+		var day = t.slice(4, 6);
+		var hh = t.slice(6, 8);
+		return [month, day, hh, line[3], line[4], line[7], line[9], line[10],
+			line[14], line[15], line[16], line[17], line[18], line[19],line[20],line[21], line[1]*1
+		];
+	} else {
+		return "";
+	}
 
 }
 

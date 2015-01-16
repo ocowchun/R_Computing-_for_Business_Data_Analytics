@@ -24,39 +24,86 @@ function transform(attr, klass) {
 }
 
 
+function Store() {
+  this.stores = {};
+  this.attrStore = new Set();
+  this.classStore = [];
+}
+
+Store.prototype.add = function(attr, val, klass) {
+  var key = 'attr' + attr;
+  var key2 = 'val:' + val + "_klass:" + klass;
+  if (!this.stores[key]) {
+    this.stores[key] = new Set();
+  }
+  this.stores[key].add(key2, 1);
+};
+
+Store.prototype.get = function(attr, val, klass) {
+  var key = 'attr' + attr;
+  var key2 = 'val:' + val + "_klass:" + klass;
+  return this.stores[key].get(key2) || 0;
+};
+
+
+Store.prototype.addAttr = function(attr, klass) {
+  var key = "attr:" + attr + "_c:" + klass;
+  this.attrStore.add(key, 1);
+};
+
+Store.prototype.getAttr = function(attr, klass) {
+  var key = "attr:" + attr + "_c:" + klass;
+  return this.attrStore.get(key) || 0;
+};
+
+Store.prototype.addClass = function(klass) {
+  var current = this.classStore[klass] || 0;
+  this.classStore[klass] = current + 1;
+};
+
+Store.prototype.getClass = function(klass) {
+  return this.classStore[klass];
+};
 
 function NB() {
-  this.store = new Set();
+  this.store = new Store();
   this.attrs = [];
   this.debug = this.store.debug;
 }
 
 NB.prototype.add = function(attr, val, klass) {
-  var key = this.getKey(attr, val, klass);
-  var attrKey = this.getAttrKey(attr, klass);
-  var classKey = this.getClassKey(attr);
-  this.store.add(key, 1);
-  this.store.add(attrKey, 1);
-  this.store.add(classKey, 1);
+  this.store.add(attr, val, klass);
+  this.store.addAttr(attr, klass);
+
   var attrs = this.attrs[attr] || [];
-  attrs.push(val);
-  attrs = _.uniq(attrs);
-  this.attrs[attr] = attrs;
+  if (!_.include(attrs, val)) {
+    attrs.push(val);
+    this.attrs[attr] = attrs;
+  }
+
+  // var attrs = this.attrs[attr] || [];
+  // attrs.push(val);
+  // attrs = _.uniq(attrs);
+  // this.attrs[attr] = attrs;
 };
 
+NB.prototype.addClass = function(klass) {
+  this.store.addClass(klass);
+};
+
+//attr,val有多少筆資料屬於klass
 NB.prototype.get = function(attr, val, klass) {
-  var key = this.getKey(attr, val, klass);
-  return this.store.get(key) || 1;
+  return this.store.get(attr, val, klass);
 };
 
+//attr有多少筆資料屬於klass
 NB.prototype.getAttr = function(attr, klass) {
-  var key = this.getAttrKey(attr, klass);
-  return this.store.get(key) || 0;
+  return this.store.getAttr(attr, klass);
 };
 
+// 多少筆資料屬於klass
 NB.prototype.getClass = function(klass) {
-  var key = this.getClassKey(klass);
-  return this.store.get(key) || 0;
+  return this.store.getClass(klass);
 };
 
 
@@ -79,8 +126,10 @@ NB.prototype.getClassKey = function(klass) {
 NB.prototype.loadOneRow = function(data) {
   var c = _.last(data);
   var max = data.length - 1; //扣掉class
+  this.addClass(c);
   for (var i = 0; i < max; i++) {
     this.add(i, data[i], c);
+
   }
 }
 
@@ -133,11 +182,6 @@ NB.prototype.predict = function(data) {
   }
 };
 
-
-var data = transform([age, income, student, credit], buy);
-var nb=new NB()
-nb.train(data);
-
 module.exports.train = function(data) {
   var nb = new NB();
   nb.train(data);
@@ -148,6 +192,14 @@ module.exports.train = function(data) {
 
   return predict;
 }
+
+// test
+var data = transform([age, income, student, credit], buy);
+var nb = new NB()
+nb.train(data)
+module.exports.train(data)
+  // var d = data[1].slice(0, data[1].length - 1);
+  // nb.predict(d)
 
 // nb
 // P(C|D)=P(D|C)*P(C)/P(D)
